@@ -5,8 +5,9 @@ The files found here are just my dotfiles I juse to configure my shell. ALso, a 
 - Have ZSH installed (best unconfigured)
 - Have dir ~/repos
 ### Usage
-Get the .shellconfig.sh and throw it into your ~.
-Then, execute it
+Get the .shellconfig.sh and throw it into your ~.  
+Then, execute it  
+Alternatively, you can just clone the repo yourself and then execute the shellconfig.sh 
 
 ## SSH
 If you encounter problems with your ssh agent, remove: 
