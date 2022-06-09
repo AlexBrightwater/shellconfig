@@ -24,7 +24,7 @@ if [ -f ~/.bash_aliases ]; then
 fi
 
 # start ssh agent
-if [ -f ~/.start_ssl.sh ]; then
-    . ~/.start_ssl.sh
+if [ -f ~/.start_ssh.sh ]; then
+    . ~/.start_ssh.sh
 fi
 
