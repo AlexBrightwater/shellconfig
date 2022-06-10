@@ -28,7 +28,8 @@ echo "Finished populating config files from repo in ~/${path}."
 
 while getopts ":s" option; do
    case $option in
-	s) cat ~/${path}/start_ssh.sh > ~/.start_ssh.sh;;
+	s) cat ~/${path}/start_ssh.sh > ~/.start_ssh.sh
+	   echo "Finished enabeling ssh-agent on startup";;
   	\?) echo "Error: Didn't copy start_ssh.sh anywhere.";;  
    esac
 done
