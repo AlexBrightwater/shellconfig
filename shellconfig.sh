@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # make var of conf files to enable custom locations
 
 conf_path=$(pwd)
@@ -19,6 +20,7 @@ if [[ ! -d $conf_path/.BAK/$curr_time ]]; then
 	cp ~/.bash_aliases $conf_path/.BAK/$curr_time/
 	cp ~/.p10k.zsh $conf_path/.BAK/$curr_time/
 	cp ~/.vimrc $conf_path/.BAK/$curr_time/
+	cp ~/.tmux.conf $conf_path/.BAK/$curr_time/
 
 	echo "Backup created in $conf_path/.BAK/$curr_time/"
 	
@@ -45,6 +47,7 @@ cp $conf_path/zshrc ~/.zshrc
 cp $conf_path/bash_aliases ~/.bash_aliases
 cp $conf_path/p10k.zsh ~/.p10k.zsh
 cp $conf_path/vimrc ~/.vimrc
+cp $conf_path/tmux.conf ~/.tmux.conf
 
 echo "Finished populating config files from $conf_path to home dir."
 
@@ -74,6 +77,22 @@ function restore_do () {
 	exit 0
 }
 
+###################
+# Asks what to do #
+###################
+function set_option () {
+	read -p "What do you want to do with the script? Run help if you are unsure. " loption
+	case $loption in
+		i|install)	backup; install;;
+		b|backup)	backup;;
+		o|nobackup)	install;;
+		r|restore)	restore_promt;;
+		h|help)		echo "help not implemented yet";;
+		\?)		echo "Error: Didn't copy start_ssh.sh anywhere.";; 
+	esac
+	
+}
+
 ###############################################
 # get options and run the specified functions #
 ###############################################
@@ -84,7 +103,10 @@ while getopts ":iborh" option; do
 	o)	install;;
 	r)	restore_promt;;
 	h)	echo "help not implemented yet";;
-  	\?)	echo "Error: Didn't copy start_ssh.sh anywhere.";;  
+  	\?)	echo "Error: Didn't copy start_ssh.sh anywhere.";; 
    esac
+	exit 0
 done
+
+set_option
 
