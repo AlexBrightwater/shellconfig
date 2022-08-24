@@ -5,6 +5,7 @@ The files found here are just my dotfiles I juse to configure my shell. Also, a 
 - Have ZSH installed (best unconfigured)  
 - Pull the repo once
 - Use Patched NerdFont
+- tmux with tpm
 ### Usage
 Run the shellconfig.sh with options:  
 i)	backup and install  
