@@ -4,6 +4,7 @@
 
 conf_path=$(pwd)
 curr_time=$(date +'%m-%d-%Y_%Hh%Mm')
+# Declare files you want to sav(f)e here. Support for dirs coming
 declare -a saveme=("zshrc" "bash_aliases" "p10k.zsh" "vimrc"
 "tmux.conf" )
 
@@ -74,17 +75,34 @@ function restore_do () {
 	exit 0
 }
 
+########
+# HELP #
+########
+function help_message () {
+	echo "You have just a few options. "
+	echo "+---------------------------------------+"
+	echo "| -i | Create a backup and install      |"
+	echo "| -b | Create a backup                  |"
+	echo "| -o | Install w/o creating a backup    |"
+	echo "| -r | Restore from last backup         |"
+	echo "| -h | For this help page               |"
+	echo "+---------------------------------------+"
+	echo "This script belongs to Alex Brightwater on GitHub."
+	echo "> https://github.com/AlexBrightwater/shellconfig"
+}
+
+
 ###################
 # Asks what to do #
 ###################
 function set_option () {
-	read -p "What do you want to do with the script? Run help if you are unsure. (iborh)" loption
+	read -p "What do you want to do with the script? Insert h if for help. (iborh) " loption
 	case $loption in
 		i|install)	backup; install;;
 		b|backup)	backup;;
 		o|nobackup)	install;;
 		r|restore)	restore_promt;;
-		h|help)		echo "help not implemented yet";;
+		h|help)		help_message;;
 		\?)		echo "Error: Didn't copy start_ssh.sh anywhere.";; 
 	esac
 	
@@ -99,11 +117,10 @@ while getopts ":iborh" option; do
 	b)	backup;;
 	o)	install;;
 	r)	restore_promt;;
-	h)	echo "help not implemented yet";;
+	h)	help_message;;
   	\?)	echo "Error: Didn't copy start_ssh.sh anywhere.";; 
    esac
 	exit 0
 done
 
 set_option
-
