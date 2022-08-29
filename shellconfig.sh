@@ -4,6 +4,8 @@
 
 conf_path=$(pwd)
 curr_time=$(date +'%m-%d-%Y_%Hh%Mm')
+declare -a saveme=("zshrc" "bash_aliases" "p10k.zsh" "vimrc"
+"tmux.conf" )
 
 ######################################################
 # make backup of current conf state for easy restore #
@@ -16,11 +18,9 @@ fi
 if [[ ! -d $conf_path/.BAK/$curr_time ]]; then
 	mkdir  $conf_path/.BAK/$curr_time
 
-	cp ~/.zshrc $conf_path/.BAK/$curr_time/ 
-	cp ~/.bash_aliases $conf_path/.BAK/$curr_time/
-	cp ~/.p10k.zsh $conf_path/.BAK/$curr_time/
-	cp ~/.vimrc $conf_path/.BAK/$curr_time/
-	cp ~/.tmux.conf $conf_path/.BAK/$curr_time/
+	for val in "${saveme[@]}"; do
+		cat ~/.$val > $conf_path/.BAK/$curr_time/.$val
+	done
 
 	echo "Backup created in $conf_path/.BAK/$curr_time/"
 	
@@ -43,11 +43,9 @@ else
 	echo "Files for p10k already exist"
 fi
 
-cp $conf_path/zshrc ~/.zshrc
-cp $conf_path/bash_aliases ~/.bash_aliases
-cp $conf_path/p10k.zsh ~/.p10k.zsh
-cp $conf_path/vimrc ~/.vimrc
-cp $conf_path/tmux.conf ~/.tmux.conf
+	for val in "${saveme[@]}"; do
+		cat $conf_path/$val > ~/.$val 
+	done
 
 echo "Finished populating config files from $conf_path to home dir."
 
@@ -68,10 +66,9 @@ function restore_promt () {
 
 function restore_do () {
 	latest=$(ls -td $conf_path/.BAK/* | head -1)
-	cp $latest/.zshrc ~/.zshrc
-	cp $latest/.bash_aliases ~/.bash_aliases
-	cp $latest/.p10k.zsh ~/.p10k.zsh
-	cp $latest/.vimrc ~/.vimrc
+	for val in "${saveme[@]}"; do
+		cat $latest/.$val > ~/.$val 
+	done
 	
 	echo "Restore complete"
 	exit 0
@@ -81,7 +78,7 @@ function restore_do () {
 # Asks what to do #
 ###################
 function set_option () {
-	read -p "What do you want to do with the script? Run help if you are unsure. " loption
+	read -p "What do you want to do with the script? Run help if you are unsure. (iborh)" loption
 	case $loption in
 		i|install)	backup; install;;
 		b|backup)	backup;;

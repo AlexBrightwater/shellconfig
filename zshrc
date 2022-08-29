@@ -40,7 +40,7 @@ if [ -f ~/.bash_aliases ]; then
 fi
 # Use .inno_aliases to store aliases
 # Local Aliases
-if [ -f ~/aliases/.local_aliases ]; then
+if [ -f ~/.local_aliases ]; then
     . ~/.local_aliases
 fi
 
