@@ -35,8 +35,8 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Use .bash_aliases to store aliases
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
+if [ -f ~/.*_aliases ]; then
+    . ~/.*_aliases
 fi
 
 # start ssh agent
