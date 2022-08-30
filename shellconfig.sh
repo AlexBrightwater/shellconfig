@@ -1,55 +1,67 @@
 #!/bin/bash
 
 # make var of conf files to enable custom locations
-
-conf_path=$(pwd)
+repo_path=$(pwd)
 curr_time=$(date +'%m-%d-%Y_%Hh%Mm')
-# Declare files you want to sav(f)e here. Support for dirs coming
-declare -a saveme=("zshrc" "bash_aliases" "p10k.zsh" "vimrc"
+
+# Declare what you want to save to git
+declare -a files=("zshrc" "bash_aliases" "p10k.zsh" "vimrc"
 "tmux.conf" )
+declare -a dirs=()
+
+# TODO
+# package support
+# 	Detect system or use input
+# Directry Support
+# in zshrc add theme correctly
+# zsh plugins
+# only keep 5 backups
+
 
 ######################################################
 # make backup of current conf state for easy restore #
 ######################################################
 function backup () {
-if [[ ! -d $conf_path/.BAK ]]; then
-	mkdir $conf_path/.BAK
+if [[ ! -d $repo_path/.BAK ]]; then
+	mkdir $repo_path/.BAK
 fi
 
-if [[ ! -d $conf_path/.BAK/$curr_time ]]; then
-	mkdir  $conf_path/.BAK/$curr_time
+if [[ ! -d $repo_path/.BAK/$curr_time ]]; then
+	mkdir  $repo_path/.BAK/$curr_time
 
-	for val in "${saveme[@]}"; do
-		cat ~/.$val > $conf_path/.BAK/$curr_time/.$val
+	for val in "${files[@]}"; do
+		if [[ -f ~/.$val ]]; then
+			cat ~/.$val > $repo_path/.BAK/$curr_time/.$val
+		fi
 	done
 
-	echo "Backup created in $conf_path/.BAK/$curr_time/"
-	
+	echo "Backup created in $repo_path/.BAK/$curr_time/"
 else 
 	echo "Could't create Backup, please try again in 1 minute."
 	exit 1
 fi
 }
 
-######################################################
-# make backup of current conf state, clone p10k and  #
-#  populate the config files                         #
-######################################################
+###############################
+#  populate the config files  #
+###############################
 function install () {
-if [[ ! -d ~/powerlevel10k ]]
-then
-	git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
-	echo "Cloned p10k files to ~/powerlevel10k"
-else
-	echo "Files for p10k already exist"
-fi
-
-	for val in "${saveme[@]}"; do
-		cat $conf_path/$val > ~/.$val 
+	for val in "${files[@]}"; do
+		cat $repo_path/$val > ~/.$val 
 	done
 
-echo "Finished populating config files from $conf_path to home dir."
+	echo "Finished populating config files from $repo_path to home dir."
+}
 
+# Get powerlevel10k
+function powerlevel () {
+	if [[ ! -d ~/powerlevel10k ]]
+	then
+		git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+		echo "Cloned p10k files to ~/powerlevel10k"
+	else
+		echo "Files for p10k already exist"
+	fi
 }
 
 ########################
@@ -61,14 +73,15 @@ function restore_promt () {
   		y|Y ) echo "Continuing with the restore process"; restore_do;;
   		n|N ) echo "Aborting the restore process"; exit 0;;
   		* ) echo "The answer was invalid. Please try again"; restore_promt ;;
-		
 	esac
 }
 
 function restore_do () {
-	latest=$(ls -td $conf_path/.BAK/* | head -1)
-	for val in "${saveme[@]}"; do
-		cat $latest/.$val > ~/.$val 
+	latest=$(ls -td $repo_path/.BAK/* | head -1)
+	for val in "${files[@]}"; do
+		if [[ -f ~/.$val ]]; then
+			cat $latest/.$val > ~/.$val
+		fi
 	done
 	
 	echo "Restore complete"
@@ -79,48 +92,40 @@ function restore_do () {
 # HELP #
 ########
 function help_message () {
-	echo "You have just a few options. "
-	echo "+---------------------------------------+"
-	echo "| -i | Create a backup and install      |"
-	echo "| -b | Create a backup                  |"
-	echo "| -o | Install w/o creating a backup    |"
-	echo "| -r | Restore from last backup         |"
-	echo "| -h | For this help page               |"
-	echo "+---------------------------------------+"
-	echo "This script belongs to Alex Brightwater on GitHub."
-	echo "> https://github.com/AlexBrightwater/shellconfig"
+	echo "Under construction again"
+	#echo "You have just a few options. "
+	#echo "+---------------------------------------+"
+	#echo "| -i | Create a backup and install      |"
+	#echo "| -b | Create a backup                  |"
+	#echo "| -o | Install w/o creating a backup    |"
+	#echo "| -r | Restore from last backup         |"
+	#echo "| -h | For this help page               |"
+	#echo "+---------------------------------------+"
+	#echo "This script belongs to Alex Brightwater on GitHub."
+	#echo "> https://github.com/AlexBrightwater/shellconfig"
 }
-
 
 ###################
 # Asks what to do #
 ###################
-function set_option () {
-	read -p "What do you want to do with the script? Insert h if for help. (iborh) " loption
-	case $loption in
-		i|install)	backup; install;;
-		b|backup)	backup;;
-		o|nobackup)	install;;
-		r|restore)	restore_promt;;
-		h|help)		help_message;;
-		\?)		echo "Error: Didn't copy start_ssh.sh anywhere.";; 
-	esac
-	
+function no_options () {
+	echo "Please execute the script again and provide arguments."
+	echo "Use -h for help"
+	exit 0
 }
 
-###############################################
-# get options and run the specified functions #
-###############################################
-while getopts ":iborh" option; do
-   case $option in
-	i)	backup; install;;
-	b)	backup;;
-	o)	install;;
-	r)	restore_promt;;
-	h)	help_message;;
-  	\?)	echo "Error: Didn't copy start_ssh.sh anywhere.";; 
-   esac
-	exit 0
+while :; do
+    case $1 in
+        -i|--install) backup; install;;
+        -b|--backup) backup;;
+        -o|--nobackup) install;;
+        -r|--restore) restore_promt;;
+		-p|--powerlevel10k) powerlevel;;
+        -h|--help) help_message;;
+        *) break
+    esac
+    shift
 done
+exit 0
 
-set_option
+no_options

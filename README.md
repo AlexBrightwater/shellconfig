@@ -12,6 +12,6 @@ i)	backup and install
 b)	backup  
 o)	install  
 r)	restore previous version  
-h)	help not implemented yet  
+h)	help  
 ### Keep in Mind  
 Make sure your SSH agent is running and that your key used for GitHub is added. Otherwise pulling is difficult.
