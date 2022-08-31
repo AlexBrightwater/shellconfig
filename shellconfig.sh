@@ -5,18 +5,21 @@ repo_path=$(pwd)
 curr_time=$(date +'%m-%d-%Y_%Hh%Mm')
 
 # Declare what you want to save to git
+# files and directories must be dotfiles
 declare -a files=("zshrc" "bash_aliases" "p10k.zsh" "vimrc"
 "tmux.conf" )
-declare -a dirs=()
+declare -a dirs=(test)
 
 # TODO
 # package support
 # 	Detect system or use input
-# Directry Support
+# Directry Support -> Done?
 # in zshrc add theme correctly
 # zsh plugins
 # only keep 5 backups
+# get tmux working
 
+# Insterting to specific line: sed -i '2 i content here' filehere 
 
 ######################################################
 # make backup of current conf state for easy restore #
@@ -34,6 +37,11 @@ if [[ ! -d $repo_path/.BAK/$curr_time ]]; then
 			cat ~/.$val > $repo_path/.BAK/$curr_time/.$val
 		fi
 	done
+	for val in "${dirs[@]}"; do
+		if [[ -d ~/.$val ]]; then
+			cp -r ~/.$val $repo_path/.BAK/$curr_time/.$val
+		fi
+	done
 
 	echo "Backup created in $repo_path/.BAK/$curr_time/"
 else 
@@ -48,6 +56,11 @@ fi
 function install () {
 	for val in "${files[@]}"; do
 		cat $repo_path/$val > ~/.$val 
+	done
+	for val in "${dirs[@]}"; do
+		if [[ -d ~/.$val ]]; then
+			cp -r $repo_path/$val ~/.$val
+		fi
 	done
 
 	echo "Finished populating config files from $repo_path to home dir."
@@ -83,6 +96,11 @@ function restore_do () {
 			cat $latest/.$val > ~/.$val
 		fi
 	done
+	for val in "${dirs[@]}"; do
+		if [[ -d ~/.$val ]]; then
+			cp -r $latest/.$val ~/.$val
+		fi
+	done	
 	
 	echo "Restore complete"
 	exit 0
